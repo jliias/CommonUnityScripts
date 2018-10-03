@@ -1,7 +1,8 @@
-﻿// ----------------------------------------------------------------------------------------
-// Loader class for starting up GameManager and SoundManager for game
+﻿// -----------------------------------------------------------------------------------------
+// Loader class for instantiating GameManager and SoundManager for game (singleton pattern).
+// This must be placed in some GameObject (e.g. Camera) at first scene (buildIndex=0).
 // Author: Juha Liias, WestSloth Games
-// ----------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------------------
 
 using UnityEngine;
 using System.Collections;
