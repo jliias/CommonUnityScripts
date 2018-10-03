@@ -1,5 +1,7 @@
 ﻿// ----------------------------------------------------------------------------------------
-// GameManager class to handle transitions between Unity scenes
+// GameManager class:
+// - Handles transitions between Unity scenes
+//
 // Author: Juha Liias, WestSloth Games
 // ----------------------------------------------------------------------------------------
 
@@ -33,6 +35,8 @@ public class GameManager : MonoBehaviour
 	private GameObject continueObject;
 	private Text textContinue;
 	private string continueMessage = "Tap to continue";
+
+	private GameObject buttonMenu;
 
 	// Awake is always called before any Start functions
 	void Awake ()
@@ -107,6 +111,11 @@ public class GameManager : MonoBehaviour
 			textContinue.text = continueMessage;
 			continueObject.SetActive (false);
 		}
+
+		buttonMenu = GameObject.Find ("ButtonMenu");
+		if (buttonMenu != null) {
+			buttonMenu.SetActive (false);
+		}
 	}
 
 
@@ -139,6 +148,9 @@ public class GameManager : MonoBehaviour
 		if (Input.GetMouseButtonDown (0) && !MyIsPointerOverGameObject ()) {
 			if (continueObject != null) {
 				continueObject.SetActive (true);
+			}
+			if (buttonMenu != null) {
+				buttonMenu.SetActive (true);
 			}
 			if (gamePlayActions == null || gamePlayActions.sceneDone) {
 				Debug.Log ("mouse button on level:" + sceneNumber);
