@@ -26,6 +26,12 @@ public class GameManager : MonoBehaviour
 	// current scene number
 	private int sceneNumber;
 
+	// Highscore as integer
+	public int highScore;
+
+	// use this as PlayerPrefs 
+	public string highScoreKey = "LocalHighScore";
+
 	// Text to display current level number
 	// (not necessary same than current scene)
 	private Text textLevel;
@@ -36,7 +42,14 @@ public class GameManager : MonoBehaviour
 	private Text textContinue;
 	private string continueMessage = "Tap to continue";
 
+	// GameObject for menu button
 	private GameObject buttonMenu;
+
+	// Text to display highscore on menu screen
+	// GameObject variable is needed for show/hide text
+	private GameObject highScoreObject;
+	private Text textHighScore;
+	private string highScoreMessage;
 
 	// Awake is always called before any Start functions
 	void Awake ()
@@ -72,6 +85,32 @@ public class GameManager : MonoBehaviour
 		// unsubscribe delegate
 		SceneManager.sceneLoaded -= OnSceneLoaded;
 	}
+
+	//Update is called every frame.
+	void Update ()
+	{
+		// Check active scene and get it's buildIndex (integer)
+		Scene currentScene = SceneManager.GetActiveScene ();
+		sceneNumber = currentScene.buildIndex;
+
+		// Continue to next scene (buildIndex), if:
+		//   mouse is clicked AND
+		//       GamePlayActions type object does not exist on current scene (menu or init scene)
+		//    OR GamePlayActions.sceneDone variable is true (scene is completed)
+		if (Input.GetMouseButtonDown (0) && !MyIsPointerOverGameObject ()) {
+			if (continueObject != null) {
+				continueObject.SetActive (true);
+			}
+			if (buttonMenu != null) {
+				buttonMenu.SetActive (true);
+			}
+			if (gamePlayActions == null || gamePlayActions.sceneDone) {
+				Debug.Log ("mouse button on level:" + sceneNumber);
+				NextScene ();
+			}
+		}
+	}
+
 
 	// This will be executed when scene is loaded
 	private void OnSceneLoaded (Scene thisScene, LoadSceneMode mode)
@@ -116,9 +155,16 @@ public class GameManager : MonoBehaviour
 		if (buttonMenu != null) {
 			buttonMenu.SetActive (false);
 		}
+
+		highScoreObject = GameObject.Find ("HighScoreText");
+		if (highScoreObject != null) {
+			highScoreMessage = "Highscore\n" + highScore;
+			textHighScore = highScoreObject.GetComponent<Text> ();
+			textHighScore.text = highScoreMessage;
+			highScoreObject.SetActive (true);
+		}
 	}
-
-
+		
 	// Returns true if mouse or first touch is over any event system object (usually gui elements)
 	public static bool MyIsPointerOverGameObject ()
 	{
@@ -133,32 +179,7 @@ public class GameManager : MonoBehaviour
 		}
 		return false;
 	}
-
-	//Update is called every frame.
-	void Update ()
-	{
-		// Check active scene and get it's buildIndex (integer)
-		Scene currentScene = SceneManager.GetActiveScene ();
-		sceneNumber = currentScene.buildIndex;
-
-		// Continue to next scene (buildIndex), if:
-		//   mouse is clicked AND
-		//       GamePlayActions type object does not exist on current scene (menu or init scene)
-		//    OR GamePlayActions.sceneDone variable is true (scene is completed)
-		if (Input.GetMouseButtonDown (0) && !MyIsPointerOverGameObject ()) {
-			if (continueObject != null) {
-				continueObject.SetActive (true);
-			}
-			if (buttonMenu != null) {
-				buttonMenu.SetActive (true);
-			}
-			if (gamePlayActions == null || gamePlayActions.sceneDone) {
-				Debug.Log ("mouse button on level:" + sceneNumber);
-				NextScene ();
-			}
-		}
-	}
-
+		
 	// Switch to next active scene
 	// If this is the last scene (buildIndex), then jump back to menu scene ('1' by default)
 	private void NextScene ()
@@ -180,5 +201,14 @@ public class GameManager : MonoBehaviour
 		int nextScene = 1;
 		Debug.Log ("next scene: " + nextScene);
 		SceneManager.LoadScene (nextScene);
+	}
+
+	public int LoadHighScore() {
+		int thisHighScore = PlayerPrefs.GetInt (highScoreKey, 0);
+		return thisHighScore;
+	}
+
+	public void SaveHighScore(int thisScore) {
+		PlayerPrefs.SetInt (highScoreKey, thisScore);
 	}
 }
