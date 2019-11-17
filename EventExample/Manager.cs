@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿/* Manager class for testing events using Actions
+ * Author: Juha Liias, WestSloth Games
+ */
+using UnityEngine;
 
 public class Manager : MonoBehaviour
 {

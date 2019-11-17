@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿/* TestPlayer class for testing events (Action) usage
+ * Author: Juha Liias, WestSloth Games
+ */
+using UnityEngine;
 using System;
 
 public class TestPlayer : MonoBehaviour
